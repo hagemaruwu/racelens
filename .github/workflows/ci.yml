@@ -1,0 +1,32 @@
+name: RaceLens CI
+
+on:
+  push:
+    branches: [ main, master ]
+  pull_request:
+    branches: [ main, master ]
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v3
+
+    - name: Install Dependencies
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y build-essential gcc clang
+
+    - name: Build RaceLens
+      run: |
+        make clean
+        make CC=gcc
+
+    - name: Run Test Suite
+      run: |
+        make test
+
+    - name: Run Benchmark
+      run: |
+        python3 benchmark/run_bench.py
